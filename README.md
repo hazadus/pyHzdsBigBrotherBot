@@ -8,6 +8,7 @@
 ## Dependencies
 - `telebot`
 - `pytelegrambotapi`
+- `mysql-connector-python`
 
 ## Installation
 - Создать файл `bot_token.py` с переменной `TOKEN`, содержащей
