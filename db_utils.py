@@ -34,13 +34,27 @@ def db_get_user_f_word_count(user_id: str) -> int:
 
 
 def db_get_users_score_table(chat_id="*") -> str:
-    # TODO: сделать выборку по рейтингу в конкретных чатах
-    query = f"""
-    SELECT *
-    FROM (SELECT fuck_facts.user_id, COUNT(*) FROM fuck_facts GROUP BY user_id ORDER BY COUNT(*) DESC) AS A
-    JOIN (SELECT DISTINCT(user_id), username, user_first_name, user_last_name FROM fuck_facts) AS B
-    ON A.user_id=B.user_id    
-    """
+    """Выдает рейтинг пользователей в чате chat_id. Без параметра выдает сквозной рейтинг по всем чатам."""
+
+    if not chat_id=="*":
+        query = f"""
+        SELECT *
+        FROM (SELECT fuck_facts.user_id, COUNT(*) FROM fuck_facts
+            WHERE chat_id="{chat_id}" GROUP BY user_id ORDER BY COUNT(*) DESC) AS A
+        JOIN (SELECT DISTINCT(user_id), username, user_first_name, user_last_name FROM fuck_facts
+            WHERE chat_id="{chat_id}") AS B
+        ON A.user_id=B.user_id    
+        """
+    else:
+        query = f"""
+        SELECT *
+        FROM (SELECT fuck_facts.user_id, COUNT(*) FROM fuck_facts
+            GROUP BY user_id ORDER BY COUNT(*) DESC) AS A
+        JOIN (SELECT DISTINCT(user_id), username, user_first_name, user_last_name FROM fuck_facts) AS B
+        ON A.user_id=B.user_id    
+        """
+
+
     query_result = db_query(query)
     users_score_table = ""
 

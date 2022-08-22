@@ -68,7 +68,8 @@ def text(message):
 
     # в приватном чате выдаём еще и таблицу рекордов на любой текст
     if message.chat.type == 'private':
-        bot.reply_to(message, f"<b>Таблица рекордов:</b>\n\n{db_utils.db_get_users_score_table()}",
+        bot.reply_to(message, f"<b>Таблица рекордов (по всем чатам):</b>\n\n"
+                              f"{db_utils.db_get_users_score_table()}",
                      parse_mode="HTML")
 
 

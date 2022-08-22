@@ -60,6 +60,7 @@ cabbages_list = get_cabbages()
 if len(cabbages_list):
     random.shuffle(cabbages_list)
     # TODO: поменять фразу "кстати" на случайно выбранную из нескольких подобных фраз
+    # Искусственный интелект (нейросеть...) определил, что вам интересны цены на капусту:
     bot_utils.bot_sendtext(BOT_CHAT_ID, "Кстати, есть интересные предложения на рынке капусты, например:")
     bot_utils.bot_sendtext(BOT_CHAT_ID, cabbages_list[0])
 else:
