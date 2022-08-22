@@ -13,3 +13,4 @@
 ## Installation
 - Создать файл `bot_token.py` с переменной `TOKEN`, содержащей
 token вашего бота.
+- Создать файл `db_setup.py` с настройками БД MySQL.
