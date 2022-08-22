@@ -63,11 +63,10 @@ def db_get_users_score_table(chat_id="*") -> str:
 def db_add_f_message(f_word: str, message: telebot.types.Message) -> None:
     """Добавляет _матерное_ сообщение в БД. Использовать только для сообщений с матами. Ничего не возвращает."""
 
-    # TODO: сохранять в базе также id chat'а для дальнейшего построения рейтинга по конкретному чату
     insert_f_message = f"""
-    INSERT INTO fuck_facts (user_id, user_first_name, user_last_name, username, f_word, f_message)
+    INSERT INTO fuck_facts (user_id, chat_id, user_first_name, user_last_name, username, f_word, f_message)
     VALUES
-        ({message.from_user.id}, "{message.from_user.first_name}", "{message.from_user.last_name}", 
+        ("{message.from_user.id}", "{str(message.chat.id)}", "{message.from_user.first_name}", "{message.from_user.last_name}", 
         "{message.from_user.username}", "{f_word}", "{message.text}")
     """
     db_query(insert_f_message)

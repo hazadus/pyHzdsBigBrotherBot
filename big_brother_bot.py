@@ -16,7 +16,11 @@ bot = telebot.TeleBot(bot_token.TOKEN)
 
 # Список корней матерных слов
 f_word_aliases = {
-    "Хуй": ["хуй", "хуё", "хуя", "хуе", "хую", "хуле", "хули"],
+    "Хуй": ["хуй", "хуё", "хуя", "хуе", "хую", "хуле", "хули",
+            "хyй", "хyё", "хyя", "хyе", "хyю", "хyле", "хyли",  # латиница y
+            "xуй", "xуё", "xуя", "xуе", "xую", "xуле", "xули",  # латиница х
+            "xyй", "xyё", "xyя", "xyе", "xyю", "xyле", "xyли"   # латиница xy
+            ],
     "Пизда": ["пизд", "пизж"],
     "Ебать": ["еба", "еби", "ебл", "ебу", "ёб", "ебы", "ебо", "ёпта", "епта", "ёпты", "епты"],
     "Хер": ["хер"],
@@ -59,7 +63,13 @@ def text(message):
     if f_count:
         bot_utils.print_debug(f"Найдено матов в сообщении = {f_count}", message)
         bot.reply_to(message, f"{f_count} мата дектед. Алярм!\n\n"
-                              f"Ваш счёт: <b>{db_utils.db_get_user_f_word_count(message.from_user.id)}</b>", parse_mode="HTML")
+                              f"Ваш счёт: <b>{db_utils.db_get_user_f_word_count(message.from_user.id)}</b>",
+                     parse_mode="HTML")
+
+    # в приватном чате выдаём еще и таблицу рекордов на любой текст
+    if message.chat.type == 'private':
+        bot.reply_to(message, f"<b>Таблица рекордов:</b>\n\n{db_utils.db_get_users_score_table()}",
+                     parse_mode="HTML")
 
 
 while True:
