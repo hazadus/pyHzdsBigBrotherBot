@@ -6,9 +6,6 @@ import bot_utils
 import db_utils
 
 
-# TODO: формировать рейтинг юзеров по матершине (функция в pyTelegramBot набросана + cron?)
-#       рейтинг глобальный и отдельно для конкретного чата?
-# TODO: запланированное сообщение (утром и вечером) с выводом рейтинга юзеров (наброски в pyMysqlDemo)
 # TODO: фиксировать вообще _все_ сообщения в отдельной таблице (для дальнейшего анализа)
 
 
@@ -40,6 +37,7 @@ def count_f_words(message: telebot.types.Message) -> int:
 
     total_f_count = 0
 
+    # TODO: перед поиском "вычистить" слова типа: требовать, требует, ...
     for f_key in f_word_aliases.keys():
         for f_value in f_word_aliases[f_key]:
             f_entries = re.findall(f_value, message.text.lower())
@@ -53,6 +51,7 @@ def count_f_words(message: telebot.types.Message) -> int:
 
     return total_f_count
 
+# TODO: handle image captions (opt+space on "message_handler" below to get info!
 
 @bot.message_handler(content_types=['text'])
 def text(message):
@@ -63,7 +62,9 @@ def text(message):
     if f_count:
         bot_utils.print_debug(f"Найдено матов в сообщении = {f_count}", message)
         bot.reply_to(message, f"{f_count} мата дектед. Алярм!\n\n"
-                              f"Ваш счёт: <b>{db_utils.db_get_user_f_word_count(message.from_user.id)}</b>",
+                              f"Ваш счёт: <b>{db_utils.db_get_user_f_word_count(message.from_user.id, message.chat.id)}"
+                              f"</b> в этом чате, "
+                              f"<b>{db_utils.db_get_user_f_word_count(message.from_user.id)}</b> всего.",
                      parse_mode="HTML")
 
     # в приватном чате выдаём еще и таблицу рекордов на любой текст

@@ -23,10 +23,14 @@ def db_query(query: str) -> list:
         return []
 
 
-def db_get_user_f_word_count(user_id: str) -> int:
-    """Возвращает количество матов, использованных пользователем с указанным id."""
+def db_get_user_f_word_count(user_id: str, chat_id="*") -> int:
+    """Возвращает количество матов, использованных пользователем с указанным id, в указанном чате"""
 
-    count = db_query(f"SELECT COUNT(*) FROM fuck_facts WHERE user_id = {user_id}")
+    if chat_id=="*":
+        count = db_query(f"SELECT COUNT(*) FROM fuck_facts WHERE user_id = {user_id}")
+    else:
+        count = db_query(f"SELECT COUNT(*) FROM fuck_facts WHERE user_id = {user_id} AND chat_id = {chat_id}")
+
     if not count:
         return 0
     else:
