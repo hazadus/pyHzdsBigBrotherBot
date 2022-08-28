@@ -91,6 +91,18 @@ def db_add_f_message(f_word: str, message: telebot.types.Message) -> None:
     db_query(insert_f_message)
 
 
+def db_add_any_message(message: telebot.types.Message) -> None:
+    """Добавляет любое сообщение чата в отдельную таблицу (для дальнейшего её анализа"""
+
+    insert_message = f"""
+    INSERT INTO all_messages (user_id, chat_id, user_first_name, user_last_name, username, message)
+    VALUES
+        ("{message.from_user.id}", "{str(message.chat.id)}", "{message.from_user.first_name}", 
+        "{message.from_user.last_name}",  "{message.from_user.username}", "{message.text}")
+    """
+    db_query(insert_message)
+
+
 def db_get_f_words_rating(chat_id="*") -> list:  # TODO: сделать варик, возвращающий форматированный текст
     """Возвращает список вида [("Хуй": 58)] с рейтингом матерных слов (отсортированный по убыванию)."""
 

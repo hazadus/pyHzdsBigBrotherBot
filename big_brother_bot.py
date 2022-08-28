@@ -58,6 +58,8 @@ def count_f_words(message: telebot.types.Message) -> int:
 def text(message):
     bot_utils.print_debug(message.text, message)
 
+    db_utils.db_add_any_message(message)
+
     f_count = count_f_words(message)
 
     if f_count:
