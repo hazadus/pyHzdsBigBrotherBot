@@ -11,3 +11,4 @@ score_table = db_utils.db_get_users_score_table(BOT_CHAT_ID)
 bot_utils.print_debug(score_table)
 bot_utils.bot_sendtext(BOT_CHAT_ID, f"<b>Поприветствуем ударников матерного фронта:</b>\n\n{score_table}\n"
                                     f"<i>Рейтинг по данным из этого чата</i>")
+# TODO: добавить вывод рейтинга матов

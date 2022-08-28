@@ -1,3 +1,4 @@
+import bot_utils
 import db_setup
 import telebot
 from mysql.connector import connect, Error
@@ -37,7 +38,7 @@ def db_get_user_f_word_count(user_id: str, chat_id="*") -> int:
         return count[0][0]
 
 
-def db_get_users_score_table(chat_id="*") -> str:
+def db_get_users_score_table(chat_id="*") -> str:  # TODO: сделать вариант, который возвращает неформатированный список
     """Выдает рейтинг пользователей в чате chat_id. Без параметра выдает сквозной рейтинг по всем чатам."""
 
     if not chat_id=="*":
@@ -88,3 +89,15 @@ def db_add_f_message(f_word: str, message: telebot.types.Message) -> None:
         "{message.from_user.username}", "{f_word}", "{message.text}")
     """
     db_query(insert_f_message)
+
+
+def db_get_f_words_rating(chat_id="*") -> list:  # TODO: сделать варик, возвращающий форматированный текст
+    """Возвращает список вида [("Хуй": 58)] с рейтингом матерных слов (отсортированный по убыванию)."""
+
+    if chat_id == "*":
+        rating = db_query(f"SELECT DISTINCT(f_word), COUNT(*) FROM fuck_facts GROUP BY f_word ORDER BY COUNT(*) DESC")
+    else:
+        rating = db_query(f"SELECT DISTINCT(f_word), COUNT(*) FROM fuck_facts WHERE chat_id={chat_id} "
+                          f"GROUP BY f_word ORDER BY COUNT(*) DESC")
+
+    return rating

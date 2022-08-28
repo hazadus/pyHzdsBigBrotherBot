@@ -19,7 +19,8 @@ f_word_aliases = {
             "xyй", "xyё", "xyя", "xyе", "xyю", "xyле", "xyли"   # латиница xy
             ],
     "Пизда": ["пизд", "пизж"],
-    "Ебать": ["еба", "еби", "ебл", "ебу", "ёб", "ебы", "ебо", "ёпта", "епта", "ёпты", "епты"],
+    "Ебать": ["еба", "еби", "ебл", "ебу", "ёб", "ебы", "ебо", "ёпта", "епта", "ёпты", "епты",
+              "долбоеб", "долбоёб"],
     "Хер": ["хер"],
     "Блядь": ["бляд", "блят", "блеад", "бляц"],
     "Залупа": ["залуп"],
@@ -37,7 +38,7 @@ def count_f_words(message: telebot.types.Message) -> int:
 
     total_f_count = 0
 
-    # TODO: перед поиском "вычистить" слова типа: требовать, требует, ...
+    # TODO: перед поиском "вычистить" слова типа: требовать, требует, (по)требл(ение), употреблять...
     for f_key in f_word_aliases.keys():
         for f_value in f_word_aliases[f_key]:
             f_entries = re.findall(f_value, message.text.lower())
@@ -67,10 +68,15 @@ def text(message):
                               f"<b>{db_utils.db_get_user_f_word_count(message.from_user.id)}</b> всего.",
                      parse_mode="HTML")
 
-    # в приватном чате выдаём еще и таблицу рекордов на любой текст
+    # в приватном чате выдаём еще и таблицу рекордов + рейтинг матов на любой текст
     if message.chat.type == 'private':
-        bot.reply_to(message, f"<b>Таблица рекордов (по всем чатам):</b>\n\n"
-                              f"{db_utils.db_get_users_score_table()}",
+        f_rating_text = "<b>Рейтинг матерных слов (по всем чатам):</b>\n"
+        for row in db_utils.db_get_f_words_rating():
+            f_word, score = row
+            f_rating_text = f"{f_rating_text}{f_word} - {score}\n"
+
+        bot.reply_to(message, f"<b>Таблица рекордов (по всем чатам):</b>\n"
+                              f"{db_utils.db_get_users_score_table()}\n{f_rating_text}",
                      parse_mode="HTML")
 
 
