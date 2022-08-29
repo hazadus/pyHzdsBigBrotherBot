@@ -6,11 +6,14 @@
 рейтинга матершинников и самых популярных матерных слов.
 
 ## Dependencies
-- `telebot`
 - `pytelegrambotapi`
 - `mysql-connector-python`
 
 ## Installation
 - Создать файл `bot_token.py` с переменной `TOKEN`, содержащей
-token вашего бота.
+token бота.
 - Создать файл `db_setup.py` с настройками БД MySQL.
+- Создать необходимые таблицы в БД.
+
+## Upcoming features
+- [Issues on GitHub](https://github.com/hazadus/pyHzdsBigBrotherBot/issues)

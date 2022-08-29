@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup as bsoup
 import bot_utils
 
 
-BOT_CHAT_ID = "133637887"  # DebugBot chat with me
-# BOT_CHAT_ID = "-1001594961681"  # Пацантрэ
+# BOT_CHAT_ID = "133637887"  # DebugBot chat with me
+BOT_CHAT_ID = "-1001594961681"  # Пацантрэ
 
 
 def get_cabbages():
