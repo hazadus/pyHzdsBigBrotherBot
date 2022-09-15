@@ -72,7 +72,7 @@ def text(message):
                      parse_mode="HTML")
 
     # если встречается слово "погод", ответить про погоду в СПБ
-    if message.text.lower().find('погод'):
+    if 'погод' in message.text.lower():
         bot_utils.bot_sendtext(message.chat.id, 'Да, погода нынче та ещё.\n\n' + get_weather_html())
 
     # в приватном чате выдаём еще и таблицу рекордов + рейтинг матов на любой текст
