@@ -1,6 +1,7 @@
 # API docs: https://openweathermap.org/api
 # Weather in St. Petersburg https://openweathermap.org/city/498817
 import requests as req
+
 import api_keys
 import bot_utils
 
@@ -37,5 +38,5 @@ def get_weather_html() -> str:
 
 
 # main
-html_weather = get_weather_html()
-bot_utils.bot_sendtext(BOT_CHAT_ID, html_weather)
+if __name__ == "__main__":
+    bot_utils.bot_sendtext(BOT_CHAT_ID, get_weather_html())

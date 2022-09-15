@@ -1,10 +1,12 @@
 import re
 import time
+
 import telebot
+
 import bot_token
 import bot_utils
 import db_utils
-
+from weather_inform import get_weather_html
 
 bot = telebot.TeleBot(bot_token.TOKEN)
 
@@ -13,7 +15,7 @@ f_word_aliases = {
     "Хуй": ["хуй", "хуё", "хуя", "хуе", "хую", "хуи", "хуле", "хули",
             "хyй", "хyё", "хyя", "хyе", "хyю", "хyле", "хyли",  # латиница y
             "xуй", "xуё", "xуя", "xуе", "xую", "xуле", "xули",  # латиница х
-            "xyй", "xyё", "xyя", "xyе", "xyю", "xyле", "xyли"   # латиница xy
+            "xyй", "xyё", "xyя", "xyе", "xyю", "xyле", "xyли"  # латиница xy
             ],
     "Пизда": ["пизд", "пизж"],
     "Ебать": ["еба", "еби", "ебл", "ебу", "ёб", "ебы", "ебо", "ебё", "ёпта", "епта", "ёпты", "епты",
@@ -45,10 +47,11 @@ def count_f_words(message: telebot.types.Message) -> int:
 
             if total_f_count:
                 # на каждое встреченное использование слова добавить строку в БД
-                for f_entry in f_entries:
+                for _ in f_entries:
                     db_utils.db_add_f_message(f_key, message)
 
     return total_f_count
+
 
 # TODO: handle image captions (opt+space on "message_handler" below to get info!
 
@@ -68,6 +71,10 @@ def text(message):
                               f"<b>{db_utils.db_get_user_f_word_count(message.from_user.id)}</b> всего.",
                      parse_mode="HTML")
 
+    # если встречается слово "погод", ответить про погоду в СПБ
+    if message.text.find('погод'):
+        bot_utils.bot_sendtext(message.chat.id, 'Да, погода нынче та ещё.\n\n' + get_weather_html())
+
     # в приватном чате выдаём еще и таблицу рекордов + рейтинг матов на любой текст
     if message.chat.type == 'private':
         f_rating_text = "<b>Рейтинг матерных слов (по всем чатам):</b>\n"
@@ -81,6 +88,7 @@ def text(message):
 
 
 while True:
+    # noinspection PyBroadException
     try:
         bot.polling(none_stop=True)
     except Exception:
