@@ -73,7 +73,8 @@ def text(message):
 
     # если встречается слово "погод", ответить про погоду в СПБ
     if 'погод' in message.text.lower():
-        bot.reply_to(message, 'Да, погода нынче та ещё.\n\n' + get_weather_html())
+        bot.reply_to(message, 'Да, погода нынче та ещё.\n\n' + get_weather_html(),
+                     parse_mode="HTML")
 
     # в приватном чате выдаём еще и таблицу рекордов + рейтинг матов на любой текст
     if message.chat.type == 'private':
