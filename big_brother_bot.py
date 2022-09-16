@@ -2,6 +2,7 @@ import re
 import time
 
 import telebot
+import sentry_sdk
 
 import bot_token
 import bot_utils
@@ -83,6 +84,11 @@ def text(message):
                               f"{db_utils.db_get_f_words_rating_html()}",
                      parse_mode="HTML")
 
+
+sentry_sdk.init(
+    dsn="https://4853b7472bc54a9c8ec355e6a163c3a0@o1402378.ingest.sentry.io/6734540",
+    traces_sample_rate=1.0
+)
 
 while True:
     # noinspection PyBroadException
