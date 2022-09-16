@@ -1,7 +1,7 @@
-import bot_utils
+from mysql.connector import connect, Error
+
 import db_setup
 import telebot
-from mysql.connector import connect, Error
 
 
 def db_query(query: str) -> list:
@@ -25,9 +25,10 @@ def db_query(query: str) -> list:
 
 
 def db_get_user_f_word_count(user_id: str, chat_id="*") -> int:
-    """Возвращает количество матов, использованных пользователем с указанным id, в указанном чате"""
+    """Возвращает количество матов, использованных пользователем с указанным id, в указанном чате, либо во всех чатах,
+    если chat_id не указан."""
 
-    if chat_id=="*":
+    if chat_id == "*":
         count = db_query(f"SELECT COUNT(*) FROM fuck_facts WHERE user_id = {user_id}")
     else:
         count = db_query(f"SELECT COUNT(*) FROM fuck_facts WHERE user_id = {user_id} AND chat_id = {chat_id}")
@@ -38,10 +39,11 @@ def db_get_user_f_word_count(user_id: str, chat_id="*") -> int:
         return count[0][0]
 
 
-def db_get_users_score_table(chat_id="*") -> str:  # TODO: сделать вариант, который возвращает неформатированный список
-    """Выдает рейтинг пользователей в чате chat_id. Без параметра выдает сквозной рейтинг по всем чатам."""
+def db_get_users_score_table_html(chat_id="*") -> str:  # TODO: сделать вариант, который возвращает неформатированный список
+    """Выдает рейтинг пользователей в чате chat_id в формате HTML. Без параметра выдает сквозной рейтинг
+    по всем чатам."""
 
-    if not chat_id=="*":
+    if not chat_id == "*":
         query = f"""
         SELECT *
         FROM (SELECT fuck_facts.user_id, COUNT(*) FROM fuck_facts
@@ -59,9 +61,8 @@ def db_get_users_score_table(chat_id="*") -> str:  # TODO: сделать вар
         ON A.user_id=B.user_id    
         """
 
-
     query_result = db_query(query)
-    users_score_table = ""
+    users_scores_html = ""
 
     for row in query_result:
         if str(row[3]) == "None":
@@ -74,9 +75,9 @@ def db_get_users_score_table(chat_id="*") -> str:  # TODO: сделать вар
         else:
             last_name = f"{str(row[5])}"
 
-        users_score_table = f"{users_score_table}{str(row[1])} - {username} {row[4]} {last_name}\n"
+        users_scores_html = f"{users_scores_html}\U0001F5E3{str(row[1])} - {username} {row[4]} {last_name}\n"
 
-    return users_score_table
+    return users_scores_html
 
 
 def db_add_f_message(f_word: str, message: telebot.types.Message) -> None:
@@ -113,3 +114,25 @@ def db_get_f_words_rating(chat_id="*") -> list:  # TODO: сделать вари
                           f"GROUP BY f_word ORDER BY COUNT(*) DESC")
 
     return rating
+
+
+def db_get_f_words_rating_html(chat_id="*") -> str:
+    """Возвращает рейтинг матерных слов, отформатированный в HTML, в чате с chat_id, или сквозной по всем чатам."""
+
+    word_emojis = {
+        "Хуй": "\U0001F346",
+        "Хер": "\U0001F336",
+        "Залупа": "\U0001F50E",
+        "Пизда": "\U0001F351",
+        "Манда": "\U0001F34A",
+        "Ебать": "\U0001F4A5",
+        "Блядь": "\U0001F64E",
+        "Пидор": "\U0001FAC3"
+    }
+
+    f_rating_html = "<b>Рейтинг матерных слов:</b>\n"
+    for row in db_get_f_words_rating(chat_id):
+        f_word, score = row
+        f_rating_html = f"{f_rating_html}{f_word}{word_emojis.get(f_word, '')} - {score}\n"
+
+    return f_rating_html

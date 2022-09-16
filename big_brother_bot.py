@@ -65,7 +65,7 @@ def text(message):
 
     if f_count:
         bot_utils.print_debug(f"Найдено матов в сообщении = {f_count}", message)
-        bot.reply_to(message, f"{f_count} мата дектед. Алярм!\n\n"
+        bot.reply_to(message, f"\U0001F92C{f_count} мата дектед. Алярм!\n\n"
                               f"Ваш счёт: <b>{db_utils.db_get_user_f_word_count(message.from_user.id, message.chat.id)}"
                               f"</b> в этом чате, "
                               f"<b>{db_utils.db_get_user_f_word_count(message.from_user.id)}</b> всего.",
@@ -78,13 +78,9 @@ def text(message):
 
     # в приватном чате выдаём еще и таблицу рекордов + рейтинг матов на любой текст
     if message.chat.type == 'private':
-        f_rating_text = "<b>Рейтинг матерных слов (по всем чатам):</b>\n"
-        for row in db_utils.db_get_f_words_rating():
-            f_word, score = row
-            f_rating_text = f"{f_rating_text}{f_word} - {score}\n"
-
         bot.reply_to(message, f"<b>Таблица рекордов (по всем чатам):</b>\n"
-                              f"{db_utils.db_get_users_score_table()}\n{f_rating_text}",
+                              f"{db_utils.db_get_users_score_table_html()}\n"
+                              f"{db_utils.db_get_f_words_rating_html()}",
                      parse_mode="HTML")
 
 
