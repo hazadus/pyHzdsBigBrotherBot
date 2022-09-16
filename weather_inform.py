@@ -11,6 +11,7 @@ BOT_CHAT_ID = "-1001594961681"  # Пацантрэ
 
 
 def get_weather_html() -> str:
+    """Возвращает отформатированное в HTML сообщение о погоде в Санкт-Петербурге."""
     loc = 'St. Petersburg'
     api_url = "https://api.openweathermap.org/data/2.5/weather?"
     params = f"q={loc}&lang=ru&appid={api_keys.API_KEY_OPENWEATHER}"
@@ -21,18 +22,18 @@ def get_weather_html() -> str:
     # TODO: check response before continuing
 
     weather = response.json()
-    weather_html = "<b>Погода в Санкт-Петербурге:</b>\n\n"
+    weather_html = "\U0001F325<b>Погода в Санкт-Петербурге:</b>\n\n"
 
     # Fetch Weather
     temp = weather['main']['temp']
-    weather_html += "Температура: " + "{:.1f}".format(temp - 273.15) + " °C, "\
+    weather_html += "\U0001F321Температура: " + "{:.1f}".format(temp - 273.15) + " °C, "\
                     + weather['weather'][0]['description'] + "\n"
 
     humidity = weather['main']['humidity']
-    weather_html += "Влажность: " + str(humidity) + "%\n"
+    weather_html += "\U0001F4A7Влажность: " + str(humidity) + "%\n"
 
     wind = weather['wind']['speed']
-    weather_html += "Ветер: " + str(wind) + " м/с"
+    weather_html += "\U0001F32CВетер: " + str(wind) + " м/с"
 
     return weather_html
 
