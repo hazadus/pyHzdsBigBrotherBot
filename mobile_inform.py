@@ -19,6 +19,15 @@ intros = [
     'Что там в РЖД с призывом?'
 ]
 
+queries = [
+    'мобилизация в Санкт-Петербурге',
+    'мобилизация в России'
+]
+
+url_stop_list = [
+    'bbc.com', 'youtube.com', 'wikipedia.org'
+]
+
 
 def google_search(query: str, max_results: int) -> dict:
     url = f"https://www.google.com/search?q={query}&num={max_results}"
@@ -29,18 +38,23 @@ def google_search(query: str, max_results: int) -> dict:
 
     for result in links:
         href = result.get('href')
-        if "url?q=" in href and not "webcache" in href:
-            title = result.find_all('h3')
-            if len(title) != 0:
-                url = result.get('href')
-                url = url.split("&")[0]
-                url = url.split("url?q=")[1]
-                results.update({title[0].text: url})
+
+        for stop_url in url_stop_list:
+            if stop_url in href:
+                break
+        else:
+            if "url?q=" in href and not "webcache" in href:
+                title = result.find_all('h3')
+                if len(title) != 0:
+                    url = result.get('href')
+                    url = url.split("&")[0]
+                    url = url.split("url?q=")[1]
+                    results.update({title[0].text: url})
     return results
 
 
 if __name__ == '__main__':
-    found = google_search('мобилизация в санкт-петербурге', 10)
+    found = google_search(random.choice(queries), 12)
     if len(found) != 0:
         msg_html = '\n'.join([f'\U0001FA96 [ <a href="{link}">{title}</a> ]' for title, link in found.items()])
         bot_sendtext(BOT_CHAT_ID, random.choice(intros))
