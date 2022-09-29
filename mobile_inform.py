@@ -25,7 +25,7 @@ queries = [
 ]
 
 url_stop_list = [
-    'bbc.com', 'youtube.com', 'wikipedia.org'
+    'bbc.com', 'youtube.com', 'wikipedia.org', 'meduza'
 ]
 
 
